@@ -1,0 +1,20 @@
+CREATE  TABLE products (
+	product_id INT NOT NULL AUTO_INCREMENT,
+	product_name VARCHAR(30),
+	product_stock INT NOT NULL,
+	product_category VARCHAR(30),
+	product_price FLOAT NOT NULL ,
+	product_description VARCHAR(100),
+	product_image VARCHAR(1000),
+	PRIMARY KEY (product_id),
+	UNIQUE (product_name)
+);
+  
+INSERT INTO products
+	(product_name, product_stock, product_category, product_price, product_description, product_image)
+
+VALUES
+	("Bamboo Plant", 100, "Plants", 20.95, "Cute bamboo plant for the home", "bamboo.jpg"),
+	("Pot", 120, "Earthenware", 10.05, "It's a pot", "pot.jpg"),
+	("Soil", 150, "Base", 7.95, "Dirt", "soil.jpg"),
+	("Stones", 90, "Base", 13.75, "Rocks", "stone.jpg");

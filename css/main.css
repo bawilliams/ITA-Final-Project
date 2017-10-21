@@ -1,0 +1,9 @@
+.product {
+    display: inline-block;
+    margin: 5%;
+}
+
+.product-image {
+    height: 300px;
+    width: 200px;
+}
