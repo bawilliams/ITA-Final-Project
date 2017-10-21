@@ -1,24 +1,29 @@
-import superagent from 'superagent';
+// import superagent from 'superagent';
 
-var products;
+// var request = superagent
+// .get('/products')
+// .set('Accept', 'application/json')
+// .end(function(err, res){
+//   if (err || !res.ok) {
+//     return console.log(err);
+//   } else {
+//     console.log(JSON.stringify(res.body));
+//     // this.setState({commits: res.body})
+//   }
+// });
 
-superagent
-.get('/products')
-.set('Accept', 'application/json')
-.end(function(err, res){
-  if (err || !res.ok) {
-    return console.log(err);
-  } else {
-    console.log(JSON.stringify(res.body));
-    console.log(products);
-    products = JSON.stringify(res.body);
-    console.log(products);
-  }
-});
+// var xhr = request.xhr;
 
-console.log(products);
+// xhr.onreadystatechange = function() {
+//   if (xhr.readyState === 4) {
+//       return xhr.responseText;
+//   }
+// }
 
-const initialState = products;
+
+// console.log(xhr.onreadystatechange);
+
+// const initialState = request;
   
-export default initialState;
+// export default initialState;
 
