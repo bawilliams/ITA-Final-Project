@@ -1,9 +1,22 @@
 import React, { Component } from 'react';
 //import initialState from './initialState';
 import './App.css';
-import Product from './components/Product';
+//import Product from './components/Product';
 import superagent from 'superagent';
 
+function Product(props) {
+  return (
+    <div className="product">
+        <img className="product-image" src="https://images-na.ssl-images-amazon.com/images/I/616IDFESKtL._SL1063_.jpg" />
+        <div className="price-button">
+            <div className="product-name">{props.product_name}</div>
+            <div className="product-price">{props.product_price}</div>
+        </div>
+        <button className="add-to-cart">Add to Cart</button>
+        <div className="product-description">{props.product_description}</div>
+    </div>
+  );
+}
 
 class App extends Component {
 
@@ -31,11 +44,21 @@ class App extends Component {
       })
   };
 
+  // Make sure the asynchronous call has finished before mapping over products or it will be null
   render() {
     return (
       <div className="App">
         <div className="products">
-          <Product />
+          {this.state && this.state.products && this.state.products.map(function(product, index) {
+            return (
+              <Product 
+                product_name={product.product_name} 
+                product_price={product.product_price} 
+                product_description={product.product_description} 
+                key={product.id} 
+              />
+            );
+          }.bind(this))}
         </div>
       </div>
     );
