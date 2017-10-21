@@ -1,9 +1,24 @@
-const initState = {
-    players: [
-        {name: 'Jim', team: '0'},
-        {name: 'James', team: '0'},
-        {name: 'Jam', team: '0'}
-    ]
-};
+import superagent from 'superagent';
+
+var products;
+
+superagent
+.get('/products')
+.set('Accept', 'application/json')
+.end(function(err, res){
+  if (err || !res.ok) {
+    return console.log(err);
+  } else {
+    console.log(JSON.stringify(res.body));
+    console.log(products);
+    products = JSON.stringify(res.body);
+    console.log(products);
+  }
+});
+
+console.log(products);
+
+const initialState = products;
   
-export default initState;
+export default initialState;
+
