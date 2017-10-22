@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-//import initialState from './initialState';
+import initialState from './initialState';
 import './App.css';
 //import Product from './components/Product';
 import superagent from 'superagent';
 
-function Header() {
+function Header(props) {
   return (
     <div className="header">
-      <a className="header-products">Products</a>
-      <a className="header-orders">Orders</a>
+      <a className="header-products" onClick={props.handleProducts}>Products</a>
+      <a className="header-orders" onClick={props.handleOrders}>Orders</a>
     </div>
   );
 }
@@ -32,8 +32,10 @@ class App extends Component {
   constructor() {
     super();
 
-    this.state = {products: null};
+    this.state = initialState;
     this.componentDidMount = this.componentDidMount.bind(this);
+    this.handleOrders = this.handleOrders.bind(this);
+    this.handleProducts = this.handleProducts.bind(this);
     console.log(this.state);
   }
   
@@ -53,12 +55,24 @@ class App extends Component {
       })
   };
 
+  handleProducts() {
+    this.setState({showProducts: true, showOrders: false});
+  }
+
+  handleOrders() {
+    this.setState({showProducts: false, showOrders: true});
+  }
+
   // Make sure the asynchronous call has finished before mapping over products or it will be null
   render() {
     return (
       <div className="App">
-        <Header />
-        <div className="products">
+        <Header 
+          handleOrders={this.handleOrders}
+          handleProducts={this.handleProducts}
+        />
+        { this.state.showProducts ? 
+          <div className="products">
           {this.state && this.state.products && this.state.products.map(function(product, index) {
             return (
               <Product 
@@ -70,6 +84,7 @@ class App extends Component {
             );
           }.bind(this))}
         </div>
+        : null }
       </div>
     );
   }
