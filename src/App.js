@@ -27,6 +27,15 @@ function Product(props) {
   );
 }
 
+function Order(props) {
+  return (
+    <div className="order">
+      <div className="product-id">Product ID: {props.product_id}</div>
+      <div className="order-quantity">Order Quantity: {props.order_quantity}</div>
+    </div>
+  );
+}
+
 class App extends Component {
 
   constructor() {
@@ -53,6 +62,18 @@ class App extends Component {
           self.setState({products: res.body});
         }
       })
+
+      superagent
+      .get('/orders')
+      .set('Accept', 'application/json')
+      .end(function(err, res){
+        if (err || !res.ok) {
+          return console.log(err);
+        } else {
+          console.log(JSON.stringify(res.body));
+          self.setState({orders: res.body});
+        }
+      })
   };
 
   handleProducts() {
@@ -61,6 +82,16 @@ class App extends Component {
 
   handleOrders() {
     this.setState({showProducts: false, showOrders: true});
+  }
+
+  handleSearch(event) {
+    console.log(event);
+  }
+
+  updateInputOrder(event) {
+    this.setState({
+      inputOrder: event.target.value
+    });
   }
 
   // Make sure the asynchronous call has finished before mapping over products or it will be null
@@ -72,6 +103,7 @@ class App extends Component {
           handleProducts={this.handleProducts}
         />
         { this.state.showProducts ? 
+
           <div className="products">
           {this.state && this.state.products && this.state.products.map(function(product, index) {
             return (
@@ -84,7 +116,28 @@ class App extends Component {
             );
           }.bind(this))}
         </div>
-        : null }
+
+        : 
+
+        <div className="orders">
+          <input 
+            type="textarea" 
+            placeholder="Enter Your Order ID" 
+            value={this.state.inputOrder}
+            onChange={event => this.updateInputOrder(event)}
+          />
+          <input type="submit" onClick={this.handleSearch}/>
+          {this.state && this.state.orders && this.state.orders.map(function(order, index) {
+            return (
+              <Order 
+                product_id={order.product_id} 
+                order_quantity={order.order_quantity}
+                key={order.id} 
+              />
+            );
+          }.bind(this))}
+        </div>
+        }
       </div>
     );
   }
