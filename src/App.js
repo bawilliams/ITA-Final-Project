@@ -45,6 +45,8 @@ class App extends Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.handleOrders = this.handleOrders.bind(this);
     this.handleProducts = this.handleProducts.bind(this);
+    this.handleInputOrder = this.handleInputOrder.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
     console.log(this.state);
   }
   
@@ -85,12 +87,17 @@ class App extends Component {
   }
 
   handleSearch(event) {
-    console.log(event);
+    var ordersArray = this.state.orders;
+    var self = this;
+    var searchedOrder = ordersArray.filter(function(order, index, ordersArray) {
+      return ordersArray[index].order_total_id === self.state.inputOrder;
+    });
+    console.log(searchedOrder);
   }
 
-  updateInputOrder(event) {
+  handleInputOrder(event) {
     this.setState({
-      inputOrder: event.target.value
+      inputOrder: parseInt(event.target.value)
     });
   }
 
@@ -102,7 +109,7 @@ class App extends Component {
           handleOrders={this.handleOrders}
           handleProducts={this.handleProducts}
         />
-        { this.state.showProducts ? 
+        {this.state.showProducts ? 
 
           <div className="products">
           {this.state && this.state.products && this.state.products.map(function(product, index) {
@@ -124,7 +131,7 @@ class App extends Component {
             type="textarea" 
             placeholder="Enter Your Order ID" 
             value={this.state.inputOrder}
-            onChange={event => this.updateInputOrder(event)}
+            onChange={this.handleInputOrder}
           />
           <input type="submit" onClick={this.handleSearch}/>
           {this.state && this.state.orders && this.state.orders.map(function(order, index) {
