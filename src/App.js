@@ -112,17 +112,19 @@ class App extends Component {
         {this.state.showProducts ? 
 
           <div className="products">
-          {this.state && this.state.products && this.state.products.map(function(product, index) {
-            return (
-              <Product 
-                product_name={product.product_name} 
-                product_price={product.product_price} 
-                product_description={product.product_description} 
-                key={product.id} 
-              />
-            );
-          }.bind(this))}
-        </div>
+            <div className="instructions">Please select which products you would like to order and hit submit.</div>
+            {this.state && this.state.products && this.state.products.map(function(product, index) {
+              return (
+                <Product 
+                  product_name={product.product_name} 
+                  product_price={product.product_price} 
+                  product_description={product.product_description} 
+                  key={product.id} 
+                />
+              );
+            }.bind(this))}
+            <input type="submit" />
+          </div>
 
         : 
 
@@ -134,7 +136,7 @@ class App extends Component {
             onChange={this.handleInputOrder}
           />
           <input type="submit" onClick={this.handleSearch}/>
-          {this.state && this.state.orders && this.state.order && this.state.order.map(function(order, index) {
+          {this.state && this.state.orders && this.state.order && this.state.products && this.state.order.map(function(order, index) {
             return (
               <Order 
                 product_id={order.product_id} 
