@@ -4,6 +4,15 @@ import './App.css';
 //import Product from './components/Product';
 import superagent from 'superagent';
 
+function Header() {
+  return (
+    <div className="header">
+      <a className="header-products">Products</a>
+      <a className="header-orders">Orders</a>
+    </div>
+  );
+}
+
 function Product(props) {
   return (
     <div className="product">
@@ -48,6 +57,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Header />
         <div className="products">
           {this.state && this.state.products && this.state.products.map(function(product, index) {
             return (
