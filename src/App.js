@@ -89,10 +89,10 @@ class App extends Component {
   handleSearch(event) {
     var ordersArray = this.state.orders;
     var self = this;
-    var searchedOrder = ordersArray.filter(function(order, index, ordersArray) {
+    var searchOrder = ordersArray.filter(function(order, index, ordersArray) {
       return ordersArray[index].order_total_id === self.state.inputOrder;
     });
-    console.log(searchedOrder);
+    this.setState({order: searchOrder});
   }
 
   handleInputOrder(event) {
@@ -134,7 +134,7 @@ class App extends Component {
             onChange={this.handleInputOrder}
           />
           <input type="submit" onClick={this.handleSearch}/>
-          {this.state && this.state.orders && this.state.orders.map(function(order, index) {
+          {this.state && this.state.orders && this.state.order && this.state.order.map(function(order, index) {
             return (
               <Order 
                 product_id={order.product_id} 
