@@ -45,6 +45,7 @@ function Order(props) {
       <div className="product-name">Product: {props.product_name}</div>
       <div className="product-name">Description: {props.product_description}</div>
       <div className="order-quantity">Order Quantity: {props.order_quantity}</div>
+      <button className="delete-order-item" onClick={props.deleteItem} data-order-item={props.order_individual_id}>Remove</button>
     </div>
   );
 }
@@ -62,6 +63,7 @@ class App extends Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.submitOrder = this.submitOrder.bind(this);
     this.handleItemAdd = this.handleItemAdd.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
   }
   
   componentDidMount() { 
@@ -125,7 +127,11 @@ class App extends Component {
     var self = this;
 
     self.state.submittedOrder.map(function(orderItem, index) {
-      var order = `{"order_total_id": ${self.state.submittedOrder[index].order_total_id}, "product_id": ${self.state.submittedOrder[index].product_id}, "order_quantity": ${self.state.submittedOrder[index].order_quantity}}`;
+      var order = `{
+        "order_total_id": ${self.state.submittedOrder[index].order_total_id}, 
+        "product_id": ${self.state.submittedOrder[index].product_id}, 
+        "order_quantity": ${self.state.submittedOrder[index].order_quantity}
+      }`;
 
       superagent
       .post('/orders')
@@ -140,26 +146,29 @@ class App extends Component {
         }
       })
     })
-
-
-
-    // superagent
-    // .post('/orders')
-    // .set('Content-Type', 'application/json')
-    // .send(`{
-    //   "order_total_id": 4,
-    //   "product_id": 5,
-    //   "order_quantity": 11
-    // }`)
-    // .end(function(err, res){
-    //   if (err || !res.ok) {
-    //     return console.log(err);
-    //   } else {
-    //     console.log(JSON.stringify(res.body));
-    //   }
-    // })
-
     self.setState(self.state);
+  }
+
+  deleteItem(event) {
+    var self = this;
+    var orderItem = Number(event.target.getAttribute('data-order-item'));
+
+      superagent
+      .del('/orders/:id')
+      .set('Content-Type', 'application/json')
+      .send({id: Number(event.target.getAttribute('data-order-item'))})
+      .end(function(err, res){
+        if (err || !res.ok) {
+          return console.log(err);
+        } else {
+          var ordersCopy = self.state.orders.filter(function(order){
+            return order.order_individual_id !== orderItem;
+          });
+          self.setState({orders: ordersCopy});
+        }
+      })
+        
+    //console.log(Number(event.target.getAttribute('data-order-item')));
   }
 
   // Make sure the asynchronous call has finished before mapping over products or it will be null
@@ -206,10 +215,12 @@ class App extends Component {
                 product_name={order.product_name} 
                 product_description={order.product_description} 
                 order_quantity={order.order_quantity}
+                order_individual_id={order.order_individual_id}
+                deleteItem={this.deleteItem}
                 key={order.id} 
               />
             );
-          })}
+          }.bind(this))}
         </div>
         }
       </div>
