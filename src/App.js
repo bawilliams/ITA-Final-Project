@@ -114,28 +114,50 @@ class App extends Component {
   }
 
   handleItemAdd(event) {
-    console.log(event.target.value);
-    console.log(event.target.getAttribute('data-product'));
+    this.setState({ submittedOrder: this.state.submittedOrder.concat({
+      "order_total_id": this.state.orderTotalId,
+      "product_id": Number(event.target.getAttribute('data-product')),
+      "order_quantity": Number(event.target.value)
+    }) })
   }
 
   submitOrder() {
     var self = this;
 
-    superagent
-    .post('/orders')
-    .set('Content-Type', 'application/json')
-    .send(`{
-      "order_total_id": 4,
-      "product_id": 5,
-      "order_quantity": 11
-    }`)
-    .end(function(err, res){
-      if (err || !res.ok) {
-        return console.log(err);
-      } else {
-        console.log(JSON.stringify(res.body));
-      }
+    self.state.submittedOrder.map(function(orderItem, index) {
+      var order = `{"order_total_id": ${self.state.submittedOrder[index].order_total_id}, "product_id": ${self.state.submittedOrder[index].product_id}, "order_quantity": ${self.state.submittedOrder[index].order_quantity}}`;
+
+      superagent
+      .post('/orders')
+      .set('Content-Type', 'application/json')
+      .send(order)
+      .end(function(err, res){
+        if (err || !res.ok) {
+          return console.log(err);
+        } else {
+          self.setState({orders: self.state.orders.concat(JSON.parse(order))});
+          self.setState({orderTotalId: (self.state.orderTotalId + 1)});
+        }
+      })
     })
+
+
+
+    // superagent
+    // .post('/orders')
+    // .set('Content-Type', 'application/json')
+    // .send(`{
+    //   "order_total_id": 4,
+    //   "product_id": 5,
+    //   "order_quantity": 11
+    // }`)
+    // .end(function(err, res){
+    //   if (err || !res.ok) {
+    //     return console.log(err);
+    //   } else {
+    //     console.log(JSON.stringify(res.body));
+    //   }
+    // })
 
     self.setState(self.state);
   }
