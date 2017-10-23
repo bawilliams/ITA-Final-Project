@@ -5,10 +5,10 @@ import './App.css';
 import superagent from 'superagent';
 
 import image_lucky_bamboo from './img/lucky_bamboo.png';
-// import image_pebbles from './img/pebbles.png';
-// import image_petite_bamboo from './img/petite_bamboo.png';
-// import image_pot from './img/pot.png';
-// import image_soil from './img/soil.png';
+import image_pebbles from './img/pebbles.png';
+import image_petite_bamboo from './img/petite_bamboo.png';
+import image_pot from './img/pot.png';
+import image_soil from './img/soil.png';
 
 function Header(props) {
   return (
@@ -22,7 +22,7 @@ function Header(props) {
 function Product(props) {
   return (
     <div className="product">
-        <img className="product-image" src={image_lucky_bamboo} alt="Bamboo"/>
+        <img className="product-image" src={'./img/'+props.product_image} alt={props.product_name}/>
         <div className="product-name">{props.product_name}</div>
         <div className="product-description">{props.product_description}</div>
         <div className="product-price">Price: {props.product_price}</div>
@@ -42,6 +42,7 @@ function Product(props) {
 function Order(props) {
   return (
     <div className="order">
+      <img className="product-image-order" src={'./img/'+props.product_image} alt={props.product_name}/>
       <div className="product-name">Product: {props.product_name}</div>
       <div className="product-name">Description: {props.product_description}</div>
       <div className="order-quantity">Order Quantity: {props.order_quantity}</div>
@@ -233,6 +234,7 @@ class App extends Component {
               <Order 
                 product_name={order.product_name} 
                 product_description={order.product_description} 
+                product_image={order.product_image}
                 order_quantity={order.order_quantity}
                 order_individual_id={order.order_individual_id}
                 deleteItem={this.deleteItem}
