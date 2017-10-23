@@ -4,12 +4,12 @@ var Order = {
 
     getAllOrders:function(callback){
         
-    return connection.query("Select * from orders",callback);
+    return connection.query("SELECT * FROM products LEFT JOIN orders ON products.product_id = orders.product_id",callback);
 
     },
     getOrderById:function(id,callback){
 
-    return connection.query("select * from orders where order_total_id=?",[id],callback);
+    return connection.query("SELECT * FROM products LEFT JOIN orders ON products.product_id = orders.product_id WHERE orders.order_total_id = ?;",[id],callback);
     },
     addOrder:function(Order,callback){
     return connection.query("Insert into orders (order_total_id, order_name, product_id, order_quantity, order_address, order_email) values(?,?,?,?,?,?)", [

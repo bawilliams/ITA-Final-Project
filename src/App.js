@@ -4,6 +4,12 @@ import './App.css';
 //import Product from './components/Product';
 import superagent from 'superagent';
 
+import image_lucky_bamboo from './img/lucky_bamboo.png';
+import image_pebbles from './img/pebbles.png';
+import image_petite_bamboo from './img/petite_bamboo.png';
+import image_pot from './img/pot.png';
+import image_soil from './img/soil.png';
+
 function Header(props) {
   return (
     <div className="header">
@@ -16,7 +22,7 @@ function Header(props) {
 function Product(props) {
   return (
     <div className="product">
-        <img className="product-image" src="https://images-na.ssl-images-amazon.com/images/I/616IDFESKtL._SL1063_.jpg" />
+        <img className="product-image" src={image_lucky_bamboo} />
         <div className="price-button">
             <div className="product-name">{props.product_name}</div>
             <div className="product-price">{props.product_price}</div>
@@ -30,7 +36,8 @@ function Product(props) {
 function Order(props) {
   return (
     <div className="order">
-      <div className="product-id">Product ID: {props.product_id}</div>
+      <div className="product-name">Product: {props.product_name}</div>
+      <div className="product-name">Description: {props.product_description}</div>
       <div className="order-quantity">Order Quantity: {props.order_quantity}</div>
     </div>
   );
@@ -119,6 +126,7 @@ class App extends Component {
                   product_name={product.product_name} 
                   product_price={product.product_price} 
                   product_description={product.product_description} 
+                  product_image={product.product_image} 
                   key={product.id} 
                 />
               );
@@ -139,7 +147,8 @@ class App extends Component {
           {this.state && this.state.orders && this.state.order && this.state.products && this.state.order.map(function(order, index) {
             return (
               <Order 
-                product_id={order.product_id} 
+                product_name={order.product_name} 
+                product_description={order.product_description} 
                 order_quantity={order.order_quantity}
                 key={order.id} 
               />
