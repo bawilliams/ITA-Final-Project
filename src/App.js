@@ -5,10 +5,10 @@ import './App.css';
 import superagent from 'superagent';
 
 import image_lucky_bamboo from './img/lucky_bamboo.png';
-import image_pebbles from './img/pebbles.png';
-import image_petite_bamboo from './img/petite_bamboo.png';
-import image_pot from './img/pot.png';
-import image_soil from './img/soil.png';
+// import image_pebbles from './img/pebbles.png';
+// import image_petite_bamboo from './img/petite_bamboo.png';
+// import image_pot from './img/pot.png';
+// import image_soil from './img/soil.png';
 
 function Header(props) {
   return (
@@ -22,13 +22,19 @@ function Header(props) {
 function Product(props) {
   return (
     <div className="product">
-        <img className="product-image" src={image_lucky_bamboo} />
-        <div className="price-button">
-            <div className="product-name">{props.product_name}</div>
-            <div className="product-price">{props.product_price}</div>
-        </div>
-        <button className="add-to-cart">Add to Cart</button>
+        <img className="product-image" src={image_lucky_bamboo} alt="Bamboo"/>
+        <div className="product-name">{props.product_name}</div>
         <div className="product-description">{props.product_description}</div>
+        <div className="product-price">Price: {props.product_price}</div>
+        <span className="select-description">Select Quantity: </span>
+        <select className="order-quantity-select" onChange={props.handleItemAdd} data-product={props.product_id}>
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
     </div>
   );
 }
@@ -54,7 +60,8 @@ class App extends Component {
     this.handleProducts = this.handleProducts.bind(this);
     this.handleInputOrder = this.handleInputOrder.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
-    console.log(this.state);
+    this.submitOrder = this.submitOrder.bind(this);
+    this.handleItemAdd = this.handleItemAdd.bind(this);
   }
   
   componentDidMount() { 
@@ -67,22 +74,20 @@ class App extends Component {
         if (err || !res.ok) {
           return console.log(err);
         } else {
-          console.log(JSON.stringify(res.body));
           self.setState({products: res.body});
         }
       })
 
       superagent
-      .get('/orders')
-      .set('Accept', 'application/json')
-      .end(function(err, res){
-        if (err || !res.ok) {
-          return console.log(err);
-        } else {
-          console.log(JSON.stringify(res.body));
-          self.setState({orders: res.body});
-        }
-      })
+        .get('/orders')
+        .set('Accept', 'application/json')
+        .end(function(err, res){
+          if (err || !res.ok) {
+            return console.log(err);
+          } else {
+            self.setState({orders: res.body});
+          }
+        })
   };
 
   handleProducts() {
@@ -104,8 +109,35 @@ class App extends Component {
 
   handleInputOrder(event) {
     this.setState({
-      inputOrder: parseInt(event.target.value)
+      inputOrder: Number(event.target.value)
     });
+  }
+
+  handleItemAdd(event) {
+    console.log(event.target.value);
+    console.log(event.target.getAttribute('data-product'));
+  }
+
+  submitOrder() {
+    var self = this;
+
+    superagent
+    .post('/orders')
+    .set('Content-Type', 'application/json')
+    .send(`{
+      "order_total_id": 4,
+      "product_id": 5,
+      "order_quantity": 11
+    }`)
+    .end(function(err, res){
+      if (err || !res.ok) {
+        return console.log(err);
+      } else {
+        console.log(JSON.stringify(res.body));
+      }
+    })
+
+    self.setState(self.state);
   }
 
   // Make sure the asynchronous call has finished before mapping over products or it will be null
@@ -119,7 +151,7 @@ class App extends Component {
         {this.state.showProducts ? 
 
           <div className="products">
-            <div className="instructions">Please select which products you would like to order and hit submit.</div>
+            <div className="instructions">Please select how many of each product you would like to order and hit submit.</div>
             {this.state && this.state.products && this.state.products.map(function(product, index) {
               return (
                 <Product 
@@ -127,11 +159,13 @@ class App extends Component {
                   product_price={product.product_price} 
                   product_description={product.product_description} 
                   product_image={product.product_image} 
+                  product_id={product.product_id}
+                  handleItemAdd={this.handleItemAdd}
                   key={product.id} 
                 />
               );
             }.bind(this))}
-            <input type="submit" />
+            <input type="submit" onClick={this.submitOrder} />
           </div>
 
         : 
@@ -153,7 +187,7 @@ class App extends Component {
                 key={order.id} 
               />
             );
-          }.bind(this))}
+          })}
         </div>
         }
       </div>

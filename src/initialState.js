@@ -3,7 +3,8 @@ const initialState = {
   order: null,
   showProducts: true,
   showOrders: false,
-  inputOrder: ''
+  inputOrder: '',
+  submittedOrder: []
 };
   
 export default initialState;
