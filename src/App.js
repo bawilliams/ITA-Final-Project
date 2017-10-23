@@ -64,6 +64,7 @@ class App extends Component {
     this.submitOrder = this.submitOrder.bind(this);
     this.handleItemAdd = this.handleItemAdd.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
+    this.deleteOrder = this.deleteOrder.bind(this);
   }
   
   componentDidMount() { 
@@ -156,7 +157,7 @@ class App extends Component {
       superagent
       .del('/orders/:id')
       .set('Content-Type', 'application/json')
-      .send({id: Number(event.target.getAttribute('data-order-item'))})
+      .send({id: orderItem})
       .end(function(err, res){
         if (err || !res.ok) {
           return console.log(err);
@@ -167,8 +168,28 @@ class App extends Component {
           self.setState({orders: ordersCopy});
         }
       })
-        
-    //console.log(Number(event.target.getAttribute('data-order-item')));
+  }
+
+  deleteOrder(event) {
+    var self = this;
+    var orderTotalId = self.state.order[0].order_total_id;
+
+    console.log(self.state.order[0].order_total_id);
+    console.log(orderTotalId);
+      superagent
+      .del('/orders/total/:id')
+      .set('Content-Type', 'application/json')
+      .send({id: orderTotalId})
+      .end(function(err, res){
+        if (err || !res.ok) {
+          return console.log(err);
+        } else {
+          var ordersCopy = self.state.orders.filter(function(order){
+            return order.order_total_id !== orderTotalId;
+          });
+          self.setState({orders: ordersCopy});
+        }
+      })
   }
 
   // Make sure the asynchronous call has finished before mapping over products or it will be null
@@ -221,6 +242,10 @@ class App extends Component {
               />
             );
           }.bind(this))}
+          {this.state.order ? 
+            <button className="delete-order" onClick={this.deleteOrder}>Delete Order</button> 
+            : 
+            <div></div>}
         </div>
         }
       </div>
