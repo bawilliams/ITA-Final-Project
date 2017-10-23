@@ -155,9 +155,8 @@ class App extends Component {
     var orderItem = Number(event.target.getAttribute('data-order-item'));
 
       superagent
-      .del('/orders/:id')
+      .del(`/orders/${orderItem}`)
       .set('Content-Type', 'application/json')
-      .send({id: orderItem})
       .end(function(err, res){
         if (err || !res.ok) {
           return console.log(err);
@@ -177,9 +176,8 @@ class App extends Component {
     console.log(self.state.order[0].order_total_id);
     console.log(orderTotalId);
       superagent
-      .del('/orders/total/:id')
+      .del(`/orders/total/${orderTotalId}`)
       .set('Content-Type', 'application/json')
-      .send({id: orderTotalId})
       .end(function(err, res){
         if (err || !res.ok) {
           return console.log(err);
