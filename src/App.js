@@ -210,7 +210,14 @@ class App extends Component {
       if (err || !res.ok) {
         return console.log(err);
       } else {
-        self.setState({orders: self.state.orders.concat(JSON.parse(order))});
+
+
+
+
+        self.setState({
+          orders: self.state.orders.concat(JSON.parse(order)),
+          order: self.state.order.concat(JSON.parse(order))
+        });
       }
     })
   }
@@ -227,7 +234,7 @@ class App extends Component {
 
           <div className="products">
             <div className="instructions">Please select how many of each product you would like to order and hit submit.</div>
-            {this.state && this.state.products && this.state.products.map(function(product, index) {
+            {this.state && this.state.products && this.state.products.map((product, index) => {
               return (
                 <Product 
                   product_name={product.product_name} 
@@ -239,7 +246,7 @@ class App extends Component {
                   key={product.id} 
                 />
               );
-            }.bind(this))}
+            })}
             <input className="button" type="submit" onClick={this.submitOrder} />
           </div>
 
@@ -248,12 +255,13 @@ class App extends Component {
         <div className="orders">
           <input 
             type="textarea" 
+            className="insert-order-id"
             placeholder="Enter Your Order ID" 
             value={this.state.inputOrder}
             onChange={this.handleInputOrder}
           />
           <input className="button" type="submit" onClick={this.handleSearch}/>
-          {this.state && this.state.orders && this.state.order && this.state.products && this.state.order.map(function(order, index) {
+          {this.state && this.state.orders && this.state.order && this.state.products && this.state.order.map((order, index) => {
             return (
               <Order 
                 product_name={order.product_name} 
@@ -265,7 +273,7 @@ class App extends Component {
                 key={order.id} 
               />
             );
-          }.bind(this))}
+          })}
           {this.state.order !== null ? 
             <div className="manage-order">
               <button className="delete-order button" onClick={this.deleteOrder}>Delete Order</button> 
