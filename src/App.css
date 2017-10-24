@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .header {
@@ -10,6 +12,24 @@
 .header-products, .header-orders {
   padding: 15px;
   line-height: 40px;
+}
+
+.button {
+  background: #3dd28d;
+  color: #FFFFFF;
+  margin: 10px;
+  border: 0 none;
+  border-radius: 4px;
+}
+  
+.button:hover {
+  transition: all 60ms ease;
+  opacity: .85;
+}
+  
+.button:active {
+  transition: all 60ms ease;
+  opacity: .75;
 }
 
 .product {

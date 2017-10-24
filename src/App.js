@@ -4,12 +4,6 @@ import './App.css';
 //import Product from './components/Product';
 import superagent from 'superagent';
 
-import image_lucky_bamboo from './img/lucky_bamboo.png';
-import image_pebbles from './img/pebbles.png';
-import image_petite_bamboo from './img/petite_bamboo.png';
-import image_pot from './img/pot.png';
-import image_soil from './img/soil.png';
-
 function Header(props) {
   return (
     <div className="header">
@@ -46,7 +40,7 @@ function Order(props) {
       <div className="product-name">Product: {props.product_name}</div>
       <div className="product-name">Description: {props.product_description}</div>
       <div className="order-quantity">Order Quantity: {props.order_quantity}</div>
-      <button className="delete-order-item" onClick={props.deleteItem} data-order-item={props.order_individual_id}>Remove</button>
+      <button className="delete-order-item button" onClick={props.deleteItem} data-order-item={props.order_individual_id}>Remove</button>
     </div>
   );
 }
@@ -66,6 +60,9 @@ class App extends Component {
     this.handleItemAdd = this.handleItemAdd.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
     this.deleteOrder = this.deleteOrder.bind(this);
+    this.handleNewProduct = this.handleNewProduct.bind(this);
+    this.handleNewQuantity = this.handleNewQuantity.bind(this);
+    this.addNewItem = this.addNewItem.bind(this);
   }
   
   componentDidMount() { 
@@ -148,47 +145,74 @@ class App extends Component {
         }
       })
     })
-    self.setState(self.state);
   }
 
   deleteItem(event) {
     var self = this;
     var orderItem = Number(event.target.getAttribute('data-order-item'));
 
-      superagent
-      .del(`/orders/${orderItem}`)
-      .set('Content-Type', 'application/json')
-      .end(function(err, res){
-        if (err || !res.ok) {
-          return console.log(err);
-        } else {
-          var ordersCopy = self.state.orders.filter(function(order){
-            return order.order_individual_id !== orderItem;
-          });
-          self.setState({orders: ordersCopy});
-        }
-      })
+    superagent
+    .del(`/orders/${orderItem}`)
+    .set('Content-Type', 'application/json')
+    .end(function(err, res){
+      if (err || !res.ok) {
+        return console.log(err);
+      } else {
+        var ordersCopy = self.state.orders.filter(function(order){
+          return order.order_individual_id !== orderItem;
+        });
+        self.setState({orders: ordersCopy});
+      }
+    })
   }
 
   deleteOrder(event) {
     var self = this;
     var orderTotalId = self.state.order[0].order_total_id;
 
-    console.log(self.state.order[0].order_total_id);
-    console.log(orderTotalId);
-      superagent
-      .del(`/orders/total/${orderTotalId}`)
-      .set('Content-Type', 'application/json')
-      .end(function(err, res){
-        if (err || !res.ok) {
-          return console.log(err);
-        } else {
-          var ordersCopy = self.state.orders.filter(function(order){
-            return order.order_total_id !== orderTotalId;
-          });
-          self.setState({orders: ordersCopy});
-        }
-      })
+    superagent
+    .del(`/orders/total/${orderTotalId}`)
+    .set('Content-Type', 'application/json')
+    .end(function(err, res){
+      if (err || !res.ok) {
+        return console.log(err);
+      } else {
+        var ordersCopy = self.state.orders.filter(function(order){
+          return order.order_total_id !== orderTotalId;
+        });
+        self.setState({orders: ordersCopy});
+      }
+    })
+  }
+
+  handleNewProduct(event) {
+    this.setState({ newProduct: Number(event.target.value) })
+  }
+
+  handleNewQuantity(event) {
+    this.setState({ newQuantity: Number(event.target.value) })
+  }
+
+  addNewItem() {
+    var self = this;
+    
+    var order = `{
+      "order_total_id": ${self.state.inputOrder}, 
+      "product_id": ${self.state.newProduct}, 
+      "order_quantity": ${self.state.newQuantity}
+    }`;
+
+    superagent
+    .post('/orders')
+    .set('Content-Type', 'application/json')
+    .send(order)
+    .end(function(err, res){
+      if (err || !res.ok) {
+        return console.log(err);
+      } else {
+        self.setState({orders: self.state.orders.concat(JSON.parse(order))});
+      }
+    })
   }
 
   // Make sure the asynchronous call has finished before mapping over products or it will be null
@@ -216,7 +240,7 @@ class App extends Component {
                 />
               );
             }.bind(this))}
-            <input type="submit" onClick={this.submitOrder} />
+            <input className="button" type="submit" onClick={this.submitOrder} />
           </div>
 
         : 
@@ -228,7 +252,7 @@ class App extends Component {
             value={this.state.inputOrder}
             onChange={this.handleInputOrder}
           />
-          <input type="submit" onClick={this.handleSearch}/>
+          <input className="button" type="submit" onClick={this.handleSearch}/>
           {this.state && this.state.orders && this.state.order && this.state.products && this.state.order.map(function(order, index) {
             return (
               <Order 
@@ -242,8 +266,29 @@ class App extends Component {
               />
             );
           }.bind(this))}
-          {this.state.order ? 
-            <button className="delete-order" onClick={this.deleteOrder}>Delete Order</button> 
+          {this.state.order !== null ? 
+            <div className="manage-order">
+              <button className="delete-order button" onClick={this.deleteOrder}>Delete Order</button> 
+              <div className="add-product">
+                <p>Please select any additional products you would like to add to your order.</p>
+                <select className="add-product-select" onChange={this.handleNewProduct}>
+                  {this.state.products.map(function(product, index) {
+                    return (
+                      <option value={product.product_id}>{product.product_name}</option>
+                    );
+                  })}
+                </select>
+                <select className="add-quantity-select" onChange={this.handleNewQuantity}>
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                <button className="add-to-order button" onClick={this.addNewItem}>Add to Order</button>
+              </div>
+            </div>
             : 
             <div></div>}
         </div>

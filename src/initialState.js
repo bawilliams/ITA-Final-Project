@@ -6,7 +6,9 @@ const initialState = {
   showOrders: false,
   inputOrder: '',
   orderTotalId: 5, 
-  submittedOrder: []
+  submittedOrder: [],
+  newProduct: null,
+  newQuantity: null
 };
   
 export default initialState;
