@@ -1,6 +1,5 @@
 .App {
   text-align: center;
-  font-family: 'Roboto Condensed', sans-serif;
   font-family: 'Roboto', sans-serif;
 }
 
@@ -32,6 +31,19 @@
   opacity: .75;
 }
 
+select {
+  border: 0;
+  color: #FFFFFF;
+  padding: 2px 10px;
+  width: 50px;
+  background: #3dd28d;
+}
+
+.add-product-select {
+  width: 200px;
+  margin: 7.5px;
+}
+
 .product {
   display: inline-block;
   margin: 5%;
@@ -40,9 +52,21 @@
 .product-image {
   height: 300px;
   width: 200px;
+  -webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+  border-radius: 20px;
 }
 
 .product-image-order {
   height: 150px;
   width: 100px;
+  -webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+  border-radius: 20px;
+}
+
+.product-name {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: bold;
+  font-size: 20px;
 }

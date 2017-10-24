@@ -38,7 +38,7 @@ function Order(props) {
     <div className="order">
       <img className="product-image-order" src={'./img/'+props.product_image} alt={props.product_name}/>
       <div className="product-name">Product: {props.product_name}</div>
-      <div className="product-name">Description: {props.product_description}</div>
+      <div className="product-description">Description: {props.product_description}</div>
       <div className="order-quantity">Order Quantity: {props.order_quantity}</div>
       <button className="delete-order-item button" onClick={props.deleteItem} data-order-item={props.order_individual_id}>Remove</button>
     </div>
