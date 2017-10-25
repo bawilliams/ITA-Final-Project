@@ -233,11 +233,11 @@ class App extends Component {
   addNewItem() {
     var self = this;
     
-    var order = JSON.parse(`{
-      "order_total_id": ${self.state.inputOrder}, 
-      "product_id": ${self.state.newProduct}, 
-      "order_quantity": ${self.state.newQuantity}
-    }`);
+    var order = {
+      order_total_id: self.state.inputOrder, 
+      product_id: self.state.newProduct, 
+      order_quantity: self.state.newQuantity
+    };
 
     // grab product info from product id 
     var productInfo = self.state.products.filter(function(product) {
@@ -330,7 +330,7 @@ class App extends Component {
             <div className="manage-order">
               <button className="delete-order button" onClick={this.deleteOrder}>Delete Order</button> 
               <div className="add-product">
-                <p>Please select any additional products you would like to add to your order.</p>
+                <div className="instructions">Please select any additional products you would like to add to your order.</div>
                 <select className="add-product-select" onChange={this.handleNewProduct}>
                   {this.state.products.map(function(product, index) {
                     return (
