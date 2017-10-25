@@ -1,16 +1,39 @@
+
 .App {
+  position: relative;
   text-align: center;
   font-family: 'Roboto', sans-serif;
 }
+.App:after {
+   content : "";
+   display: block;
+   position: absolute;
+   top: 0;
+   left: 0;
+   background-image: url("./backgrounds/bamboo_stalks.jpg"); 
+   width: 100%;
+   height: 100%;
+   opacity : 0.2;
+   z-index: -1;
+   background-size: cover;                     
+   background-repeat: no-repeat;
+   background-position: center center;
+   background-attachment: fixed;
+}
 
 .header {
-  background-color: rgb(238, 238, 238);
+  background-color: #3dd28d;
   height: 40px;
+  color: white;
 }
 
 .header-products, .header-orders {
-  padding: 15px;
+  padding: 11.4px 15px;
   line-height: 40px;
+}
+
+.header-products:hover, .header-orders:hover { 
+  background-color: #30a16c;
 }
 
 .button {
@@ -19,6 +42,7 @@
   margin: 10px;
   border: 0 none;
   border-radius: 4px;
+  box-shadow: 2px 2px 1.5px #888888;
 }
   
 .button:hover {
@@ -37,6 +61,7 @@ select {
   padding: 2px 10px;
   width: 50px;
   background: #3dd28d;
+  box-shadow: 2px 2px 1.5px #888888;
 }
 
 .add-product-select {
@@ -55,6 +80,7 @@ select {
   -webkit-border-radius: 20px;
 	-moz-border-radius: 20px;
   border-radius: 20px;
+  box-shadow: 3px 3px 2.5px #888888;
 }
 
 .product-image-order {
@@ -63,6 +89,7 @@ select {
   -webkit-border-radius: 20px;
 	-moz-border-radius: 20px;
   border-radius: 20px;
+  box-shadow: 2px 2px 1.5px #888888;
 }
 
 .product-name {

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import initialState from './initialState';
 import './App.css';
-//import Product from './components/Product';
 import superagent from 'superagent';
 
 function Header(props) {
@@ -52,8 +51,6 @@ class App extends Component {
     super();
 
     this.state = initialState;
-    this.componentDidMount = this.componentDidMount.bind(this);
-    this.handleOrderTotalId = this.handleOrderTotalId.bind(this);
     this.handleOrders = this.handleOrders.bind(this);
     this.handleProducts = this.handleProducts.bind(this);
     this.handleInputOrder = this.handleInputOrder.bind(this);
@@ -89,30 +86,6 @@ class App extends Component {
         self.setState({orders: res.body});
       }
     })
-
-  }
-  
-  componentDidMount() { 
-    var self = this; 
-    
-    // {self.state && self.state.orders && self.handleOrderTotalId();}
-
-      
-  };
-
-  handleOrderTotalId() {
-    var self = this; 
-    var orderTotalIdList = self.state.orders.map(function(order, index) {
-      return Number(order.order_total_id);
-    });
-    console.log(orderTotalIdList);
-
-    var maxId = Math.max.apply(Math, orderTotalIdList); // 306
-
-    // var maxId = Math.max(orderTotalIdList);
-    console.log(maxId);
-
-    self.setState({orderTotalId: maxId});
   }
 
   handleProducts() {
@@ -146,73 +119,59 @@ class App extends Component {
 
     var self = this;
     
-        var orderTotalIdList = self.state.orders.map(function(order, index) {
-          return Number(order.order_total_id);
-        });
-        console.log(orderTotalIdList);
-    
-        var maxId = Math.max.apply(Math, orderTotalIdList) + 1; // 306
-    
-        // var maxId = Math.max(orderTotalIdList);
-        console.log(maxId);
+    var orderTotalIdList = self.state.orders.map(function(order, index) {
+      return Number(order.order_total_id);
+    });
+    console.log(orderTotalIdList);
 
-        self.setState({orderTotalId: maxId});
+    var maxId = Math.max.apply(Math, orderTotalIdList) + 1; // 306
+
+    // var maxId = Math.max(orderTotalIdList);
+    console.log(maxId);
+
+    self.setState({orderTotalId: maxId});
 
   }
 
   submitOrder() {
     var self = this;
 
-    // var orderTotalIdList = self.state.orders.map(function(order, index) {
-    //   return Number(order.order_total_id);
-    // });
-    // console.log(orderTotalIdList);
-
-    // var maxId = Math.max.apply(Math, orderTotalIdList); // 306
-
-    // // var maxId = Math.max(orderTotalIdList);
-    // console.log(maxId);
-
-    //self.setState({orderTotalId: maxId}, function() {
-      self.state.submittedOrder.map(function(orderItem, index) {
-        var order = JSON.parse(`{
-          "order_total_id": ${self.state.orderTotalId}, 
-          "product_id": ${orderItem.product_id}, 
-          "order_quantity": ${orderItem.order_quantity}
-        }`);
-        console.log(order);
-        // grab product info from product id 
-        var productInfo = self.state.products.filter(function(product) {
-          return product.product_id === self.state.submittedOrder[index].product_id; 
-        });
-        console.log(productInfo);
-        console.log(productInfo[0].product_image);
-        // combine product info to the order        
-        order.product_name = productInfo[0].product_name;
-        order.product_price = productInfo[0].product_price;
-        order.product_description = productInfo[0].product_description;
-        order.product_image = productInfo[0].product_image;
-        order.product_category = productInfo[0].product_category;
-        order.product_stock = productInfo[0].product_stock;
-        order.order_total_id = self.state.orderTotalId;
-        console.log(order);
-        superagent
-        .post('/orders')
-        .set('Content-Type', 'application/json')
-        .send(order)
-        .end(function(err, res){
-          if (err || !res.ok) {
-            return console.log(err);
-          } else {
-            self.setState({lookupId: self.state.orderTotalId});
-            self.setState({orderTotalId: (self.state.orderTotalId + 1)});
-            self.setState({orders: self.state.orders.concat(order)});
-          }
-        });    
-      })
-    //})
-
-    
+    self.state.submittedOrder.map(function(orderItem, index) {
+      var order = JSON.parse(`{
+        "order_total_id": ${self.state.orderTotalId}, 
+        "product_id": ${orderItem.product_id}, 
+        "order_quantity": ${orderItem.order_quantity}
+      }`);
+      console.log(order);
+      // grab product info from product id 
+      var productInfo = self.state.products.filter(function(product) {
+        return product.product_id === self.state.submittedOrder[index].product_id; 
+      });
+      console.log(productInfo);
+      console.log(productInfo[0].product_image);
+      // combine product info to the order        
+      order.product_name = productInfo[0].product_name;
+      order.product_price = productInfo[0].product_price;
+      order.product_description = productInfo[0].product_description;
+      order.product_image = productInfo[0].product_image;
+      order.product_category = productInfo[0].product_category;
+      order.product_stock = productInfo[0].product_stock;
+      order.order_total_id = self.state.orderTotalId;
+      console.log(order);
+      superagent
+      .post('/orders')
+      .set('Content-Type', 'application/json')
+      .send(order)
+      .end(function(err, res){
+        if (err || !res.ok) {
+          return console.log(err);
+        } else {
+          self.setState({lookupId: self.state.orderTotalId});
+          self.setState({orderTotalId: (self.state.orderTotalId + 1)});
+          self.setState({orders: self.state.orders.concat(order)});
+        }
+      });    
+    })
   }
 
   deleteItem(event) {
