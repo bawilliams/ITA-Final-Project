@@ -334,6 +334,20 @@ class App extends Component {
                   <option value="5">5</option>
                 </select>
                 <button className="add-to-order button" onClick={this.addNewItem}>Add to Order</button>
+                {this.state.products.map((product, index) => {
+                  if (product.product_id === this.state.newProduct) {
+                    return (
+                      <Product 
+                        product_name={product.product_name} 
+                        product_price={product.product_price} 
+                        product_description={product.product_description} 
+                        product_image={product.product_image} 
+                        product_id={product.product_id}
+                      />
+                    )
+                  } 
+                  
+                })}
               </div>
             </div>
             : 
