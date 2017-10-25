@@ -33,7 +33,7 @@ function Product(props) {
             </select>
           </div>
           : 
-          <p></p>
+          <div></div>
         }
         
     </div>
@@ -105,12 +105,14 @@ class App extends Component {
   }
 
   handleSearch(event) {
+    event.preventDefault();
     var ordersArray = this.state.orders;
     var self = this;
     var searchOrder = ordersArray.filter(function(order, index, ordersArray) {
       return ordersArray[index].order_total_id === self.state.inputOrder;
     });
     this.setState({order: searchOrder});
+    this.setState({inputOrder: ''})
   }
 
   handleInputOrder(event) {
@@ -300,14 +302,16 @@ class App extends Component {
         : 
 
         <div className="orders">
-          <input 
-            type="textarea" 
-            className="insert-order-id"
-            placeholder="Enter Your Order ID" 
-            value={this.state.inputOrder}
-            onChange={this.handleInputOrder}
-          />
-          <input className="button" type="submit" onClick={this.handleSearch}/>
+          <form id="submit-order-form">
+            <input 
+              type="textarea" 
+              id="insert-order-id"
+              placeholder="Enter Your Order ID" 
+              value={this.state.inputOrder}
+              onChange={this.handleInputOrder}
+            />
+            <input className="button" type="submit" onClick={this.handleSearch}/>
+          </form>
           {this.state && this.state.orders && this.state.order && this.state.products && this.state.order.map((order, index) => {
             return (
               <Order 
