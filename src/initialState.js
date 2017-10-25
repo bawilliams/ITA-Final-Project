@@ -8,7 +8,8 @@ const initialState = {
   orderTotalId: 5, 
   submittedOrder: [],
   newProduct: 1,
-  newQuantity: null
+  newQuantity: null,
+  lookupId: null
 };
   
 export default initialState;
