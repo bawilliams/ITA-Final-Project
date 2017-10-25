@@ -19,15 +19,23 @@ function Product(props) {
         <div className="product-name">{props.product_name}</div>
         <div className="product-description">{props.product_description}</div>
         <div className="product-price">Price: {props.product_price}</div>
-        <span className="select-description">Select Quantity: </span>
-        <select className="order-quantity-select" onChange={props.handleItemAdd} data-product={props.product_id}>
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
+        {
+          props.showProducts ? 
+          <div className="select-quantity">
+            <span className="select-description">Select Quantity: </span>
+            <select className="order-quantity-select" onChange={props.handleItemAdd} data-product={props.product_id}>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          : 
+          <p></p>
+        }
+        
     </div>
   );
 }
@@ -278,6 +286,7 @@ class App extends Component {
                   product_description={product.product_description} 
                   product_image={product.product_image} 
                   product_id={product.product_id}
+                  showProducts={this.state.showProducts}
                   handleItemAdd={this.handleItemAdd}
                   key={product.id} 
                 />
@@ -343,6 +352,7 @@ class App extends Component {
                         product_description={product.product_description} 
                         product_image={product.product_image} 
                         product_id={product.product_id}
+                        showProducts={this.state.showProducts}
                       />
                     )
                   } 
