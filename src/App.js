@@ -143,22 +143,37 @@ class App extends Component {
       "product_id": Number(event.target.getAttribute('data-product')),
       "order_quantity": Number(event.target.value)
     }) })
+
+    var self = this;
+    
+        var orderTotalIdList = self.state.orders.map(function(order, index) {
+          return Number(order.order_total_id);
+        });
+        console.log(orderTotalIdList);
+    
+        var maxId = Math.max.apply(Math, orderTotalIdList) + 1; // 306
+    
+        // var maxId = Math.max(orderTotalIdList);
+        console.log(maxId);
+
+        self.setState({orderTotalId: maxId});
+
   }
 
   submitOrder() {
     var self = this;
 
-    var orderTotalIdList = self.state.orders.map(function(order, index) {
-      return Number(order.order_total_id);
-    });
-    console.log(orderTotalIdList);
+    // var orderTotalIdList = self.state.orders.map(function(order, index) {
+    //   return Number(order.order_total_id);
+    // });
+    // console.log(orderTotalIdList);
 
-    var maxId = Math.max.apply(Math, orderTotalIdList); // 306
+    // var maxId = Math.max.apply(Math, orderTotalIdList); // 306
 
-    // var maxId = Math.max(orderTotalIdList);
-    console.log(maxId);
+    // // var maxId = Math.max(orderTotalIdList);
+    // console.log(maxId);
 
-    self.setState({orderTotalId: maxId}, function() {
+    //self.setState({orderTotalId: maxId}, function() {
       self.state.submittedOrder.map(function(orderItem, index) {
         var order = JSON.parse(`{
           "order_total_id": ${self.state.orderTotalId}, 
@@ -190,13 +205,14 @@ class App extends Component {
             return console.log(err);
           } else {
             self.setState({lookupId: self.state.orderTotalId});
+            self.setState({orderTotalId: (self.state.orderTotalId + 1)});
             self.setState({orders: self.state.orders.concat(order)});
           }
         });    
       })
-    })
+    //})
 
-    //self.setState({orderTotalId: (self.state.orderTotalId + 1)});
+    
   }
 
   deleteItem(event) {
