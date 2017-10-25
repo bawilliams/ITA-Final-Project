@@ -39,6 +39,7 @@ function Order(props) {
       <img className="product-image-order" src={'./img/'+props.product_image} alt={props.product_name}/>
       <div className="product-name">Product: {props.product_name}</div>
       <div className="product-description">Description: {props.product_description}</div>
+      <div className="product-price">Price: {props.product_price}</div>
       <div className="order-quantity">Order Quantity: {props.order_quantity}</div>
       <button className="delete-order-item button" onClick={props.deleteItem} data-order-item={props.order_individual_id}>Remove</button>
     </div>
@@ -276,6 +277,7 @@ class App extends Component {
                 product_name={order.product_name} 
                 product_description={order.product_description} 
                 product_image={order.product_image}
+                product_price={order.product_price}
                 order_quantity={order.order_quantity}
                 order_individual_id={order.order_individual_id}
                 deleteItem={this.deleteItem}
