@@ -7,7 +7,7 @@ const initialState = {
   inputOrder: '',
   orderTotalId: 5, 
   submittedOrder: [],
-  newProduct: null,
+  newProduct: 1,
   newQuantity: null
 };
   

@@ -196,11 +196,24 @@ class App extends Component {
   addNewItem() {
     var self = this;
     
-    var order = `{
+    var order = JSON.parse(`{
       "order_total_id": ${self.state.inputOrder}, 
       "product_id": ${self.state.newProduct}, 
       "order_quantity": ${self.state.newQuantity}
-    }`;
+    }`);
+
+    // grab product info from product id 
+    var productInfo = self.state.products.filter(function(product) {
+      return product.product_id === self.state.newProduct; 
+    });
+
+    // combine product info to the order        
+    order.product_name = productInfo[0].product_name;
+    order.product_price = productInfo[0].product_price;
+    order.product_description = productInfo[0].product_description;
+    order.product_image = productInfo[0].product_image;
+    order.product_category = productInfo[0].product_category;
+    order.product_stock = productInfo[0].product_stock;
 
     superagent
     .post('/orders')
@@ -210,14 +223,10 @@ class App extends Component {
       if (err || !res.ok) {
         return console.log(err);
       } else {
-
-
-
-
         self.setState({
-          orders: self.state.orders.concat(JSON.parse(order)),
-          order: self.state.order.concat(JSON.parse(order))
-        });
+          orders: self.state.orders.concat(order),
+          order: self.state.order.concat(order)
+        })
       }
     })
   }
