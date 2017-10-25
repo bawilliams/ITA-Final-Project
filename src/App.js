@@ -6,6 +6,7 @@ import superagent from 'superagent';
 function Header(props) {
   return (
     <div className="header">
+      <span className="store-name">Baylee's Bamboo</span>
       <a className="header-products" onClick={props.handleProducts}>Products</a>
       <a className="header-orders" onClick={props.handleOrders}>Orders</a>
     </div>
@@ -18,7 +19,7 @@ function Product(props) {
         <img className="product-image" src={'./img/'+props.product_image} alt={props.product_name}/>
         <div className="product-name">{props.product_name}</div>
         <div className="product-description">{props.product_description}</div>
-        <div className="product-price">Price: {props.product_price}</div>
+        <div className="product-price">Price: ${props.product_price}</div>
         {
           props.showProducts ? 
           <div className="select-quantity">
@@ -46,7 +47,7 @@ function Order(props) {
       <img className="product-image-order" src={'./img/'+props.product_image} alt={props.product_name}/>
       <div className="product-name">Product: {props.product_name}</div>
       <div className="product-description">Description: {props.product_description}</div>
-      <div className="product-price">Price: {props.product_price}</div>
+      <div className="product-price">Price: ${props.product_price}</div>
       <div className="order-quantity">Order Quantity: {props.order_quantity}</div>
       <button className="delete-order-item button" onClick={props.deleteItem} data-order-item={props.order_individual_id}>Remove</button>
     </div>
@@ -294,9 +295,9 @@ class App extends Component {
                 />
               );
             })}
-            {this.state && this.state.lookupId !== null ? <span>Your Order ID is: </span> : <span></span>} 
+            {this.state && this.state.lookupId !== null ? <span className="order-id">Your Order ID is: </span> : <span></span>} 
             {this.state && this.state.lookupId !== null ? `${this.state.lookupId}` : <span></span>} 
-            <input className="button" type="submit" onClick={this.submitOrder} />
+            <input className="submit-order button" type="submit" onClick={this.submitOrder} />
           </div>
 
         : 
@@ -346,7 +347,9 @@ class App extends Component {
                   <option value="4">4</option>
                   <option value="5">5</option>
                 </select>
-                <button className="add-to-order button" onClick={this.addNewItem}>Add to Order</button>
+                <span className="add-to-order-span">
+                  <button className="add-to-order button" onClick={this.addNewItem}>Add to Order</button>
+                </span>
                 {this.state.products.map((product, index) => {
                   if (product.product_id === this.state.newProduct) {
                     return (
@@ -360,14 +363,14 @@ class App extends Component {
                       />
                     )
                   } 
-                  
                 })}
               </div>
             </div>
             : 
-            <div></div>}
+            <div className="orders-page"></div>}
         </div>
         }
+        <div className="end-of-page"></div>
       </div>
     );
   }
