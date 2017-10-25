@@ -5,7 +5,7 @@ const initialState = {
   showProducts: true,
   showOrders: false,
   inputOrder: '',
-  orderTotalId: 5, 
+  orderTotalId: null, 
   submittedOrder: [],
   newProduct: 1,
   newQuantity: null,
