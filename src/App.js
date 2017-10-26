@@ -106,7 +106,7 @@ class App extends Component {
     this.setState({showProducts: true, showOrders: false});
   }
 
-  // Switch page to orders - load in orders again to grab newly created orders, or individual ids won't populate
+  // Switch page to orders - load in orders again to grab newly created orders, or individual IDs won't populate
   handleOrders() {
     var self = this;
 
@@ -288,7 +288,7 @@ class App extends Component {
     
     // Set up order to send during request
     var order = {
-      order_total_id: self.state.inputOrder, 
+      order_total_id: self.state.inputOrderValue, 
       product_id: self.state.newProduct, 
       order_quantity: self.state.newQuantity
     };
@@ -319,6 +319,19 @@ class App extends Component {
           orders: self.state.orders.concat(order),
           order: self.state.order.concat(order)
         })
+      }
+    })
+
+    // Grab all orders again, to ensure that newly added items have updated individual order IDs
+    superagent
+    .get('/orders')
+    .set('Accept', 'application/json')
+    .end(function(err, res) {
+      if (err || !res.ok) {
+        return console.log(err);
+      } else {
+        self.setState({orders: res.body});
+        self.setState({showProducts: false, showOrders: true});
       }
     })
   }
@@ -381,7 +394,7 @@ class App extends Component {
               />
             );
           })}
-          {this.state.order !== null ? 
+          {this.state.order !== null && this.state.order[0] !== undefined ? 
             <div className="manage-order">
               <button className="delete-order button" onClick={this.deleteOrder}>Delete Order</button> 
               <div className="add-product">
