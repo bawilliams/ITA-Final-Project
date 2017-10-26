@@ -102,23 +102,41 @@ class App extends Component {
   }
 
   handleOrders() {
-    this.setState({showProducts: false, showOrders: true});
+    var self = this;
+
+    superagent
+    .get('/orders')
+    .set('Accept', 'application/json')
+    .end(function(err, res){
+      if (err || !res.ok) {
+        return console.log(err);
+      } else {
+        self.setState({orders: res.body});
+        self.setState({showProducts: false, showOrders: true});
+      }
+    })
+
+    
   }
 
   handleSearch(event) {
     event.preventDefault();
-    var ordersArray = this.state.orders;
     var self = this;
+    self.setState({inputOrderValue: self.state.inputOrder});
+    console.log(self.state.inputOrderValue)
+    var ordersArray = self.state.orders;
+
     var searchOrder = ordersArray.filter(function(order, index, ordersArray) {
       return ordersArray[index].order_total_id === self.state.inputOrder;
     });
+    console.log(searchOrder);
     this.setState({order: searchOrder});
     this.setState({inputOrder: ''})
   }
 
   handleInputOrder(event) {
     this.setState({
-      inputOrder: Number(event.target.value)
+      inputOrder: Number(event.target.value),
     });
   }
 
@@ -147,12 +165,14 @@ class App extends Component {
   submitOrder() {
     var self = this;
 
+    self.setState({lookupId: self.state.orderTotalId});
+
     self.state.submittedOrder.map(function(orderItem, index) {
-      var order = JSON.parse(`{
-        "order_total_id": ${self.state.orderTotalId}, 
-        "product_id": ${orderItem.product_id}, 
-        "order_quantity": ${orderItem.order_quantity}
-      }`);
+      var order = {
+        order_total_id: self.state.orderTotalId, 
+        product_id: orderItem.product_id, 
+        order_quantity: orderItem.order_quantity
+      };
       console.log(order);
       // grab product info from product id 
       var productInfo = self.state.products.filter(function(product) {
@@ -177,7 +197,6 @@ class App extends Component {
         if (err || !res.ok) {
           return console.log(err);
         } else {
-          self.setState({lookupId: self.state.orderTotalId});
           self.setState({orderTotalId: (self.state.orderTotalId + 1)});
           self.setState({orders: self.state.orders.concat(order)});
         }
@@ -187,7 +206,8 @@ class App extends Component {
 
   deleteItem(event) {
     var self = this;
-    var orderItem = Number(event.target.getAttribute('data-order-item'));
+    var orderItem = Number(event.target.getAttribute('data-order-item'));    
+    console.log(orderItem);
 
     superagent
     .del(`/orders/${orderItem}`)
@@ -200,6 +220,17 @@ class App extends Component {
           return order.order_individual_id !== orderItem;
         });
         self.setState({orders: ordersCopy});
+
+        var ordersArray = self.state.orders;
+        var searchOrder = ordersArray.filter(function(order, index, ordersArray) {
+          // console.log(order.order_total_id);
+          // console.log(self.state.inputOrderValue);
+          // console.log(order.order_individual_id);
+          // console.log(orderItem);
+          return (order.order_total_id === self.state.inputOrderValue && order.order_individual_id !== orderItem);
+        });
+        console.log(searchOrder);
+        self.setState({order: searchOrder});
       }
     })
   }
@@ -218,7 +249,7 @@ class App extends Component {
         var ordersCopy = self.state.orders.filter(function(order){
           return order.order_total_id !== orderTotalId;
         });
-        self.setState({orders: ordersCopy});
+        self.setState({orders: ordersCopy, order: null});
       }
     })
   }
