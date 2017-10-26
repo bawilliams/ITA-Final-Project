@@ -10,10 +10,7 @@ var connection = mysql.createConnection({
 });
 // port 8889 is the default MySQL port for MAMP
 
+// Connect using your created connection
 connection.connect();
-
-// Close the connection, which makes sure all remaining queries are 
-// executed before sending a quit packet to the mysql server
-//connection.end();
 
 module.exports = {connection};

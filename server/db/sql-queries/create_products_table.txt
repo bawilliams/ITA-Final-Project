@@ -16,6 +16,6 @@ INSERT INTO products
 VALUES
 	("Lucky Bamboo Bundle", 100, "Plants", 20.95, "Comes with six lucky bamboo plants", "lucky_bamboo.png"),
 	("Teal Ceramic Pot", 120, "Earthenware", 15.05, "Medium-sized pot for all your planting needs", "pot.png"),
-	("Potting Soil", 150, "Base", 7.95, "Locally sourced potting soil", "soil.png"),
-	("Gray Pebbles", 90, "Base", 13.75, "Small pebbles perfect for bamboo and sprucing up your garden", "pebbles.png"),
-	("Petite Bamboo", 50, "Plants", 3.95, "Comes with two petite bamboo plants of varying sizes", "petite_bamboo.png");
+	("Potting Soil", 150, "Base", 7.95, "Locally sourced potting soil with nutrients", "soil.png"),
+	("Gray Pebbles", 90, "Base", 13.75, "Small pebbles perfect for bamboo plants", "pebbles.png"),
+	("Petite Bamboo", 50, "Plants", 3.95, "Comes with two petite bamboo plants", "petite_bamboo.png");

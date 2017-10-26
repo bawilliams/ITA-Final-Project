@@ -1,5 +1,4 @@
 const express = require('express');
-const _ = require('lodash'); 
 const bodyParser = require('body-parser'); 
 const mysql = require('mysql'); 
 
@@ -16,7 +15,7 @@ app.use(bodyParser.json());
 
 // POST Request to insert new order
 app.post('/orders', (req, res) => {
-    Order.addOrder(req.body, function(err, count) {
+    Order.addOrder(req.body, function(err) {
         if (err) {
             res.json(err);
         } else {
@@ -27,8 +26,7 @@ app.post('/orders', (req, res) => {
 
 // GET Request to grab all products data
 app.get('/products', (req, res) => {
-
-    Product.getAllProducts(function(err,rows) {
+    Product.getAllProducts(function(err, rows) {
         if (err) {
             res.json(err);
         } else {
@@ -42,7 +40,7 @@ app.get('/products/:id', (req, res) => {
     // grab the variable passed in as a parameter
     var id = req.params.id;
 
-    Product.getProductById(id, function(err,rows) {
+    Product.getProductById(id, function(err, rows) {
         if (err) {
             res.json(err);
         } else {
@@ -54,7 +52,7 @@ app.get('/products/:id', (req, res) => {
 // GET Request to grab all orders data
 app.get('/orders', (req, res) => {
     
-    Order.getAllOrders(function(err,rows) {
+    Order.getAllOrders(function(err, rows) {
         if (err) {
             res.json(err);
         } else {
@@ -68,7 +66,7 @@ app.get('/orders/:id', (req, res) => {
     // grab the variable passed in as a parameter
     var id = req.params.id;
 
-    Order.getOrderById(id, function(err,rows) {
+    Order.getOrderById(id, function(err, rows) {
         if (err) {
             res.json(err);
         } else {
@@ -82,7 +80,7 @@ app.delete('/orders/:id', (req, res) => {
     // get the id
     var id = req.params.id;
 
-    Order.deleteOrder(id, function(err,rows) {
+    Order.deleteOrder(id, function(err, rows) {
         if (err) {
             res.json(err);
         } else {
@@ -96,7 +94,7 @@ app.delete('/orders/total/:id', (req, res) => {
     // get the id
     var id = req.params.id;
 
-    Order.deleteTotalOrder(id, function(err,rows) {
+    Order.deleteTotalOrder(id, function(err, rows) {
         if (err) {
             res.json(err);
         } else {
@@ -109,7 +107,7 @@ app.delete('/orders/total/:id', (req, res) => {
 app.put('/orders/:id', (req, res) => {
     var id = req.params.id;
 
-    Order.updateOrder(id, req.body, function(err,rows) {
+    Order.updateOrder(id, req.body, function(err, rows) {
         if (err) {
             res.json(err);
         } else {
@@ -122,7 +120,7 @@ app.put('/orders/:id', (req, res) => {
 app.put('/products/:id', (req, res) => {
     var id = req.params.id;
 
-    Product.updateProduct(id, req.body, function(err,rows) {
+    Product.updateProduct(id, req.body, function(err, rows) {
         if (err) {
             res.json(err);
         } else {

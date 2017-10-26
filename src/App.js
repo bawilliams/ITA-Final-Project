@@ -13,6 +13,7 @@ function Header(props) {
   );
 }
 
+// Product component only shows selector on Product page
 function Product(props) {
   return (
     <div className="product">
@@ -70,10 +71,12 @@ class App extends Component {
     this.deleteOrder = this.deleteOrder.bind(this);
     this.handleNewProduct = this.handleNewProduct.bind(this);
     this.handleNewQuantity = this.handleNewQuantity.bind(this);
-    this.addNewItem = this.addNewItem.bind(this);
+    this.addNewItemToOrder = this.addNewItemToOrder.bind(this);
 
+    // Need to set a reference to this or when you call setState in superagent this is undefined
     var self = this;
 
+    // Load in products, so they are ready to go
     superagent
     .get('/products')
     .set('Accept', 'application/json')
@@ -85,29 +88,32 @@ class App extends Component {
       }
     })
 
-  superagent
-    .get('/orders')
-    .set('Accept', 'application/json')
-    .end(function(err, res){
-      if (err || !res.ok) {
-        return console.log(err);
-      } else {
-        self.setState({orders: res.body});
-      }
-    })
+    // Load in orders, so they are ready to go
+    superagent
+      .get('/orders')
+      .set('Accept', 'application/json')
+      .end(function(err, res) {
+        if (err || !res.ok) {
+          return console.log(err);
+        } else {
+          self.setState({orders: res.body});
+        }
+      })
   }
 
+  // Switch page to products
   handleProducts() {
     this.setState({showProducts: true, showOrders: false});
   }
 
+  // Switch page to orders - load in orders again to grab newly created orders, or individual ids won't populate
   handleOrders() {
     var self = this;
 
     superagent
     .get('/orders')
     .set('Accept', 'application/json')
-    .end(function(err, res){
+    .end(function(err, res) {
       if (err || !res.ok) {
         return console.log(err);
       } else {
@@ -115,31 +121,37 @@ class App extends Component {
         self.setState({showProducts: false, showOrders: true});
       }
     })
-
-    
   }
 
+  // Set up state for displaying searched orders
   handleSearch(event) {
     event.preventDefault();
+
     var self = this;
+
+    // Set separate property to keep track of the searched Order ID, because the field will be reset for new searches
     self.setState({inputOrderValue: self.state.inputOrder});
-    console.log(self.state.inputOrderValue)
+
     var ordersArray = self.state.orders;
 
+    // Filter out all orders that do not match the searched ID
     var searchOrder = ordersArray.filter(function(order, index, ordersArray) {
       return ordersArray[index].order_total_id === self.state.inputOrder;
     });
-    console.log(searchOrder);
+
+    // Clear input field and setState for order, so it can render to the page
     this.setState({order: searchOrder});
     this.setState({inputOrder: ''})
   }
 
+  // Grab input from the user and store in state
   handleInputOrder(event) {
     this.setState({
       inputOrder: Number(event.target.value),
     });
   }
 
+  // On Products Page, set up state to submit order info (product id, order quantity, order total id)
   handleItemAdd(event) {
     this.setState({ submittedOrder: this.state.submittedOrder.concat({
       "product_id": Number(event.target.getAttribute('data-product')),
@@ -148,39 +160,39 @@ class App extends Component {
 
     var self = this;
     
+    // Get an array of all existing total order IDs
     var orderTotalIdList = self.state.orders.map(function(order, index) {
       return Number(order.order_total_id);
     });
-    console.log(orderTotalIdList);
 
-    var maxId = Math.max.apply(Math, orderTotalIdList) + 1; // 306
-
-    // var maxId = Math.max(orderTotalIdList);
-    console.log(maxId);
+    // Find the largest total order ID and add 1 for a new total order ID
+    var maxId = Math.max.apply(Math, orderTotalIdList) + 1; 
 
     self.setState({orderTotalId: maxId});
-
   }
 
+  // Handle submitting orders - state, requests, etc.
   submitOrder() {
     var self = this;
 
+    // When submitting the order, save the order total id, so you can tell the consumer
     self.setState({lookupId: self.state.orderTotalId});
 
     self.state.submittedOrder.map(function(orderItem, index) {
+
+      // Set up each individual order with existing info (product id, order total id, order quantity)
       var order = {
         order_total_id: self.state.orderTotalId, 
         product_id: orderItem.product_id, 
         order_quantity: orderItem.order_quantity
       };
-      console.log(order);
-      // grab product info from product id 
+
+      // Grab product info from product id 
       var productInfo = self.state.products.filter(function(product) {
         return product.product_id === self.state.submittedOrder[index].product_id; 
       });
-      console.log(productInfo);
-      console.log(productInfo[0].product_image);
-      // combine product info to the order        
+
+      // Combine product info to the order        
       order.product_name = productInfo[0].product_name;
       order.product_price = productInfo[0].product_price;
       order.product_description = productInfo[0].product_description;
@@ -188,7 +200,8 @@ class App extends Component {
       order.product_category = productInfo[0].product_category;
       order.product_stock = productInfo[0].product_stock;
       order.order_total_id = self.state.orderTotalId;
-      console.log(order);
+
+      // Make post request to add new order to the database
       superagent
       .post('/orders')
       .set('Content-Type', 'application/json')
@@ -197,6 +210,7 @@ class App extends Component {
         if (err || !res.ok) {
           return console.log(err);
         } else {
+          // After submitting an order, update orders and prepare next total order ID
           self.setState({orderTotalId: (self.state.orderTotalId + 1)});
           self.setState({orders: self.state.orders.concat(order)});
         }
@@ -204,11 +218,14 @@ class App extends Component {
     })
   }
 
+  // Delete individual items on an order
   deleteItem(event) {
     var self = this;
-    var orderItem = Number(event.target.getAttribute('data-order-item'));    
-    console.log(orderItem);
 
+    // Get individual order ID using a custom param
+    var orderItem = Number(event.target.getAttribute('data-order-item'));    
+
+    // Make delete request using superagent
     superagent
     .del(`/orders/${orderItem}`)
     .set('Content-Type', 'application/json')
@@ -216,29 +233,29 @@ class App extends Component {
       if (err || !res.ok) {
         return console.log(err);
       } else {
+        // Filter out the individual order ID that you want to delete then set state to updated orders
         var ordersCopy = self.state.orders.filter(function(order){
           return order.order_individual_id !== orderItem;
         });
         self.setState({orders: ordersCopy});
 
+        // Filter out all individual items that are not on this order and the item that was deleted, then set state to update
         var ordersArray = self.state.orders;
-        var searchOrder = ordersArray.filter(function(order, index, ordersArray) {
-          // console.log(order.order_total_id);
-          // console.log(self.state.inputOrderValue);
-          // console.log(order.order_individual_id);
-          // console.log(orderItem);
+        var searchOrder = ordersArray.filter(function(order) {
           return (order.order_total_id === self.state.inputOrderValue && order.order_individual_id !== orderItem);
         });
-        console.log(searchOrder);
         self.setState({order: searchOrder});
       }
     })
   }
 
+  // Delete an entire order with the order total ID
   deleteOrder(event) {
     var self = this;
+    // All items in order have the same total order ID, so just grab the first one
     var orderTotalId = self.state.order[0].order_total_id;
 
+    // Make delete request using total order ID
     superagent
     .del(`/orders/total/${orderTotalId}`)
     .set('Content-Type', 'application/json')
@@ -246,6 +263,7 @@ class App extends Component {
       if (err || !res.ok) {
         return console.log(err);
       } else {
+        // Filter out all order items that have that total order ID, then update orders and order state
         var ordersCopy = self.state.orders.filter(function(order){
           return order.order_total_id !== orderTotalId;
         });
@@ -254,29 +272,33 @@ class App extends Component {
     })
   }
 
+  // On Orders Page, set up state to add new products to the order - product ID
   handleNewProduct(event) {
-    this.setState({ newProduct: Number(event.target.value) })
+    this.setState({newProduct: Number(event.target.value)})
   }
 
+  // On Orders Page, set up state to add new products to the order - order quantity
   handleNewQuantity(event) {
-    this.setState({ newQuantity: Number(event.target.value) })
+    this.setState({newQuantity: Number(event.target.value)})
   }
 
-  addNewItem() {
+  // On Orders Page, add new products to an existing order
+  addNewItemToOrder() {
     var self = this;
     
+    // Set up order to send during request
     var order = {
       order_total_id: self.state.inputOrder, 
       product_id: self.state.newProduct, 
       order_quantity: self.state.newQuantity
     };
 
-    // grab product info from product id 
+    // Grab product info from specified product id 
     var productInfo = self.state.products.filter(function(product) {
       return product.product_id === self.state.newProduct; 
     });
 
-    // combine product info to the order        
+    // Combine product info to the order        
     order.product_name = productInfo[0].product_name;
     order.product_price = productInfo[0].product_price;
     order.product_description = productInfo[0].product_description;
@@ -284,6 +306,7 @@ class App extends Component {
     order.product_category = productInfo[0].product_category;
     order.product_stock = productInfo[0].product_stock;
 
+    // Make POST request to superagent and add updated order to state
     superagent
     .post('/orders')
     .set('Content-Type', 'application/json')
@@ -300,7 +323,7 @@ class App extends Component {
     })
   }
 
-  // Make sure the asynchronous call has finished before mapping over products or it will be null
+  // Make sure the asynchronous call has finished before mapping over state or it will be null
   render() {
     return (
       <div className="App">
@@ -379,7 +402,7 @@ class App extends Component {
                   <option value="5">5</option>
                 </select>
                 <span className="add-to-order-span">
-                  <button className="add-to-order button" onClick={this.addNewItem}>Add to Order</button>
+                  <button className="add-to-order button" onClick={this.addNewItemToOrder}>Add to Order</button>
                 </span>
                 {this.state.products.map((product, index) => {
                   if (product.product_id === this.state.newProduct) {

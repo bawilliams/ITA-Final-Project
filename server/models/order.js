@@ -1,7 +1,9 @@
 const {connection} = require('./../db/connection');
 
+// Order Model containing all possible methods
 var Order = {
 
+    // Pass in callback function, which will determine what happens when the method is called (i.e. getting the res.body, etc.)
     getAllOrders: function(callback) { 
         return connection.query("SELECT * FROM products LEFT JOIN orders ON products.product_id = orders.product_id", callback);
     },
